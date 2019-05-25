@@ -37,6 +37,7 @@
                 captureButton.addEventListener('click', () => {
                   const context = canvas.getContext('2d');
                   // Draw the video frame to the canvas.
+                  ctx.scale(0.5, 0.5);
                   context.drawImage(player, 0, 0, snapshotCanvas.width,
                       snapshotCanvas.height);
                       console.log('Successfully loaded image!');
@@ -65,14 +66,11 @@
                     <div class="col-md-6">
                         <button id="download-btn" class="btn btn-dark btn-block">Download Image</button>
                     </div>
-                    <div class="col-md-6">
-                        <button id="revert-btn" class="btn btn-danger btn-block">Remove Filters</button>
-                    </div>
                 </div>
 
                 <footer id="footer">
                     <br><br>
-                    <p>Made by <a href="http://www.jakegrogan.com">Julia Feitosa</a></p>
+                    <p>Made by <a href="http://www.linkedin.com/juliafeitosac">Julia Feitosa</a></p>
                 </footer>
             </div>
         </div>

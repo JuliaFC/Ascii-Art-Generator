@@ -1,8 +1,16 @@
 const canvas = document.getElementById('canvas');
 const terminal = document.getElementById('terminal');
 const ctx = canvas.getContext('2d');
+const ctxTerminal = terminal.getContext('2d');
+const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+const data = imgData.data;
+const map = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+
 const MAX_PIXEL_VALUE = 255;
 const MIN_PIXEL_VALUE = 0;
+
+let maxPixel = 0;
+let minPixel = 255;
 
 let img = new Image();
 let filename = '';
@@ -14,58 +22,58 @@ const revertBtn = document.getElementById('revert-btn');
 document.addEventListener('click', e => {
     if(e.target.classList.contains('filter-btn')) {
         if(e.target.classList.contains('ascii-art')){
-          const terminalContext = terminal.getContext('2d');
-          const imgData = ctx.getImageData(0,0,snapshotCanvas.width, snapshotCanvas.height);
-          const data = imgData.data;
-          const map = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
-          let ascii = "";
-          let line = 10;
-          let step = 8;
-          // enumerate all pixels
-          // each pixel's r,g,b,a datum are stored in separate sequential array elements
-          const ct = document.getElementById('terminal').getContext('2d');
-          ct.font = '10px serif';
-          ct.fillStyle = "#ececec"
-
-          for (let i = 0; i < data.length; i += 32) {
-            let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            data[i]     = avg; // red
-            data[i + 1] = avg; // green
-            data[i + 2] = avg; // blue
-            if((i/8) % snapshotCanvas.width == 0) {
-              ascii += "\n";
-              ct.fillText(ascii, 0, line);
-              console.log(ascii);
-              ascii = "";
-              line += step;
-            }
-            let idx = Math.floor(avg/MAX_PIXEL_VALUE * map.length) - 1;
-            ascii += map[idx];
-
-          }
-          ctx.putImageData(imgData, 0, 0);
-
+          convertToBW();
+          toAscii();
 
         }
     }
 });
 
-revertBtn.addEventListener('click', e => {
-    Caman('#canvas', img, function(){
-        this.revert();
-    });
-})
+function convertToBW() {
+  // enumerate all pixels
+  // each pixel's r,g,b,a datum are stored in separate sequential array elements
+  const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+  const data = imgData.data;
 
-function normalize() {
-/*
-  max_pixel = max(map(max, intensity_matrix))
-    min_pixel = min(map(min, intensity_matrix))
-    for row in intensity_matrix:
-        rescaled_row = []
-        for p in row:
-            r = MAX_PIXEL_VALUE * (p - min_pixel) / float(max_pixel - min_pixel)
-            rescaled_row.append(r)
-        normalized_intensity_matrix.append(rescaled_row) */
+  for(let i = 0; i < data.length; i+=4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const toGreyScale = (r, g, b) => (0.21 * r + 0.72 * g + 0.07 * b);
+    data[i] = data[i+1] = data[i+2] = toGreyScale(r, g, b);
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+}
+
+function renderPixel(val) {
+  return map[Math.ceil((map.length - 1) * val / 255)];
+}
+
+function toAscii() {
+
+  let ascii = "";
+  let line = 10;
+  let step = 8;
+
+  const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+  const data = imgData.data;
+  let w = canvas.width;
+
+  ctxTerminal.font = '10px serif';
+  ctxTerminal.fillStyle = "#ececec"
+
+  for(let i = 0; i < data.length; i+=4) {
+    if ((i + 1) % w === 0) {
+      ascii += "\n";
+    }
+
+    ascii += renderPixel(data[i]);
+
+
+  }
+  ctxTerminal.fillText(ascii, 0, 10);
+
 }
 
 downloadBtn.addEventListener('click', e => {
