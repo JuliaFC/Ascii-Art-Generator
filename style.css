@@ -8,21 +8,7 @@
     width:640px;
     height:480px;
 }
-.btn-disabled{
-    color:#000 !important;
-    background-color: #fff !important;
-}
 
 #footer{
     margin-top:10px;
-}
-
-li {
-    float:left;
-}
-
-li a.lnk{
-    display:block;
-    padding-right: 16px;
-    padding-bottom: -16px;
 }
