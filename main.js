@@ -11,6 +11,36 @@ const captureButton = document.getElementById('capture');
 
 let img = new Image();
 let filename = '';
+let greyScale = [];
+
+let videoTracks;
+
+const handleSuccess = (stream) => {
+  // Attach the video stream to the video element and autoplay.
+  player.srcObject = stream;
+  videoTracks = stream.getVideoTracks();
+};
+const MAXIMUM_WIDTH = 160;
+const MAXIMUM_HEIGHT = 120;
+const contrast = 20;
+const getFontRatio = () => {
+    const pre = document.createElement('pre');
+    pre.style.display = 'inline';
+    pre.textContent = ' ';
+
+    document.body.appendChild(pre);
+    const { width, height } = pre.getBoundingClientRect();
+    document.body.removeChild(pre);
+    return height/width;
+};
+
+const constrainProportions = (width, height) => {
+    const rectifiedWidth = Math.floor(getFontRatio() * width);
+
+    if (height > MAXIMUM_HEIGHT) {
+        const reducedWidth = Math.floor(rectifiedWidth * MAXIMUM_HEIGHT / height);
+        return [reducedWidth, MAXIMUM_HEIGHT];
+    }
 
 let videoTracks;
 
