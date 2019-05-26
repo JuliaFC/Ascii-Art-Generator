@@ -4,7 +4,7 @@ const asciiImage = document.getElementById('ascii');
 const ctx = canvas.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
-const map =" `^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+const map =" .,~:i1tfLCG08@$";
 const player = document.getElementById('player');
 const snapshotCanvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture');
@@ -20,41 +20,12 @@ const handleSuccess = (stream) => {
   player.srcObject = stream;
   videoTracks = stream.getVideoTracks();
 };
-const MAXIMUM_WIDTH = 160;
-const MAXIMUM_HEIGHT = 120;
-const contrast = 20;
-const getFontRatio = () => {
-    const pre = document.createElement('pre');
-    pre.style.display = 'inline';
-    pre.textContent = ' ';
-
-    document.body.appendChild(pre);
-    const { width, height } = pre.getBoundingClientRect();
-    document.body.removeChild(pre);
-    return height/width;
-};
-
-const constrainProportions = (width, height) => {
-    const rectifiedWidth = Math.floor(getFontRatio() * width);
-
-    if (height > MAXIMUM_HEIGHT) {
-        const reducedWidth = Math.floor(rectifiedWidth * MAXIMUM_HEIGHT / height);
-        return [reducedWidth, MAXIMUM_HEIGHT];
-    }
-
-let videoTracks;
-
-const handleSuccess = (stream) => {
-  // Attach the video stream to the video element and autoplay.
-  player.srcObject = stream;
-  videoTracks = stream.getVideoTracks();
-};
-
 const contrast = 20;
 const constrainRate = 0.35;
 const MAXIMUM_WIDTH = Math.floor(canvas.width * constrainRate);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * constrainRate);
 
+
 const getFontRatio = () => {
     const pre = document.createElement('pre');
     pre.style.display = 'inline';
@@ -65,6 +36,7 @@ const getFontRatio = () => {
     document.body.removeChild(pre);
     return height/width;
 };
+
 
 const constrainProportions = (width, height) => {
     const rectifiedWidth = Math.floor(getFontRatio() * width);
@@ -95,10 +67,11 @@ function processImage() {
   context.drawImage(player, 0, 0, snapshotCanvas.width,
       snapshotCanvas.height);
   videoTracks.forEach((track) => {
-      track.stop()
+      track.stop();
   });
   player.style.display = 'none';
 }
+
 captureButton.addEventListener('click', () => {
   processImage();
   convertToBW();
@@ -115,8 +88,6 @@ function convertToBW() {
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
-  let bc = [];
-  let ac = [];
 
   for(let i = 0; i < data.length; i+=4) {
     const r = data[i];
@@ -125,7 +96,6 @@ function convertToBW() {
     const toGreyScale = (r, g, b) =>  (Math.max(r, g, b) + Math.min(r, g, b)) / 2;
     let p =  toGreyScale(r, g, b);
     data[i] = data[i+1] = data[i+2] = p;
-    bc.push(data[i]);
   }
 
   ctx.putImageData(imgData, 0, 0);
@@ -139,7 +109,7 @@ function renderPixel(val) {
       times--;
     }
     return pixel;
-  }
+  };
   return extend(p, 1);
 }
 
