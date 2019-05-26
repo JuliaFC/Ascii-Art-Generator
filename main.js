@@ -4,7 +4,8 @@ const asciiImage = document.getElementById('ascii');
 const ctx = canvas.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
-const map =" .,~:i1tfLCG08@$";
+const japaneseMap = " .,~:i1tfLCG08@$";
+const map ="・ヽヾゞょいうめゆぬむぎふあ";
 const player = document.getElementById('player');
 const snapshotCanvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture');
@@ -21,7 +22,8 @@ const handleSuccess = (stream) => {
   videoTracks = stream.getVideoTracks();
 };
 const contrast = 20;
-const constrainRate = 0.35;
+const constrainRate = 0.65;
+const fontSize = "2px";
 const MAXIMUM_WIDTH = Math.floor(canvas.width * constrainRate);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * constrainRate);
 
@@ -29,7 +31,7 @@ const MAXIMUM_HEIGHT = Math.floor(canvas.height * constrainRate);
 const getFontRatio = () => {
     const pre = document.createElement('pre');
     pre.style.display = 'inline';
-    pre.textContent = ' ';
+    pre.textContent = map[0];
 
     document.body.appendChild(pre);
     const { width, height } = pre.getBoundingClientRect();
@@ -126,7 +128,7 @@ function toAscii() {
     }
     ascii += renderPixel(data[i]);
   }
-  asciiImage.style.fontSize = "3px";
+  asciiImage.style.fontSize = fontSize;
   asciiImage.textContent = ascii;
 }
 
