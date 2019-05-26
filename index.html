@@ -14,60 +14,19 @@
             <a href="#" class="navbar-brand">ASCII Art Generator</a>
         </div>
     </nav>
+
     <div class="container">
         <div class="row">
-            <div class="col-md-10 m-auto">
-
-
+            <div class="col-xl-12 m-auto">
+              <div class="row justify-content-md-center row mb-3">
+                  <div class="col-md-6">
+                      <button id="capture" class="filter-btn ascii-art btn btn-success btn-block">Capture</button>
+                  </div>
+              </div>
               <video id="player" controls autoplay></video>
-              <button id="capture">Capture</button>
+
               <canvas id="canvas" width=640 height=480></canvas>
-              <script>
-                const player = document.getElementById('player');
-                const snapshotCanvas = document.getElementById('canvas');
-                const captureButton = document.getElementById('capture');
-                let videoTracks;
-
-                const handleSuccess = (stream) => {
-                  // Attach the video stream to the video element and autoplay.
-                  player.srcObject = stream;
-                  videoTracks = stream.getVideoTracks();
-                };
-
-                captureButton.addEventListener('click', () => {
-                  const context = canvas.getContext('2d');
-                  // Draw the video frame to the canvas.
-                  ctx.scale(0.5, 0.5);
-                  context.drawImage(player, 0, 0, snapshotCanvas.width,
-                      snapshotCanvas.height);
-                      console.log('Successfully loaded image!');
-                      console.log('Image size: ' + snapshotCanvas.width + ' x ' + snapshotCanvas.height);
-
-                  videoTracks.forEach((track) => {
-                      track.stop()
-                  });
-                });
-
-                navigator.mediaDevices.getUserMedia({video: true})
-                    .then(handleSuccess);
-              </script>
-              <canvas id="terminal" width=640 height=480></canvas>
-
-
-                <h4 class="text-center my-3">Effects</h4>
-
-                <div class="row justify-content-md-center row mb-3">
-                    <div class="col-md-6">
-                        <button class="filter-btn ascii-art btn btn-success btn-block">Ascii Art</button>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <button id="download-btn" class="btn btn-dark btn-block">Download Image</button>
-                    </div>
-                </div>
-
+              <pre id="ascii"></pre>
                 <footer id="footer">
                     <br><br>
                     <p>Made by <a href="http://www.linkedin.com/juliafeitosac">Julia Feitosa</a></p>

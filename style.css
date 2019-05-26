@@ -3,12 +3,16 @@
     width:640px;
     height:480px;
 }
-#terminal {
-    background:#000000;
-    width:640px;
-    height:480px;
-}
 
 #footer{
     margin-top:10px;
+}
+
+pre{
+    background-color: #000000;
+    color: #00ff00;
+    text-align: center;
+    display: inline-block;
+
+
 }

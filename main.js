@@ -1,97 +1,139 @@
 const canvas = document.getElementById('canvas');
-const terminal = document.getElementById('terminal');
+const asciiImage = document.getElementById('ascii');
+
 const ctx = canvas.getContext('2d');
-const ctxTerminal = terminal.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
-const map = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
-
-const MAX_PIXEL_VALUE = 255;
-const MIN_PIXEL_VALUE = 0;
-
-let maxPixel = 0;
-let minPixel = 255;
+const map =" `^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+const player = document.getElementById('player');
+const snapshotCanvas = document.getElementById('canvas');
+const captureButton = document.getElementById('capture');
 
 let img = new Image();
 let filename = '';
 
-const downloadBtn = document.getElementById('download-btn');
-const uploadFile = document.getElementById('upload-file');
-const revertBtn = document.getElementById('revert-btn');
+let videoTracks;
 
-document.addEventListener('click', e => {
-    if(e.target.classList.contains('filter-btn')) {
-        if(e.target.classList.contains('ascii-art')){
-          convertToBW();
-          toAscii();
+const handleSuccess = (stream) => {
+  // Attach the video stream to the video element and autoplay.
+  player.srcObject = stream;
+  videoTracks = stream.getVideoTracks();
+};
 
-        }
+const contrast = 20;
+const constrainRate = 0.35;
+const MAXIMUM_WIDTH = Math.floor(canvas.width * constrainRate);
+const MAXIMUM_HEIGHT = Math.floor(canvas.height * constrainRate);
+
+const getFontRatio = () => {
+    const pre = document.createElement('pre');
+    pre.style.display = 'inline';
+    pre.textContent = ' ';
+
+    document.body.appendChild(pre);
+    const { width, height } = pre.getBoundingClientRect();
+    document.body.removeChild(pre);
+    return height/width;
+};
+
+const constrainProportions = (width, height) => {
+    const rectifiedWidth = Math.floor(getFontRatio() * width);
+
+    if (height > MAXIMUM_HEIGHT) {
+        const reducedWidth = Math.floor(rectifiedWidth * MAXIMUM_HEIGHT / height);
+        return [reducedWidth, MAXIMUM_HEIGHT];
     }
+
+    if (width > MAXIMUM_WIDTH) {
+        const reducedHeight = Math.floor(height * MAXIMUM_WIDTH / rectifiedWidth);
+        return [MAXIMUM_WIDTH, reducedHeight];
+    }
+
+    return [rectifiedWidth, height];
+};
+
+function processImage() {
+  const context = canvas.getContext('2d');
+  // Draw the video frame to the canvas.
+  const [width, height] = constrainProportions(snapshotCanvas.width, snapshotCanvas.height);
+  snapshotCanvas.width = width;
+  snapshotCanvas.height = height;
+
+  console.log('Successfully loaded image!');
+  console.log('Image size: ' + snapshotCanvas.width + ' x ' + snapshotCanvas.height);
+
+  context.drawImage(player, 0, 0, snapshotCanvas.width,
+      snapshotCanvas.height);
+  videoTracks.forEach((track) => {
+      track.stop()
+  });
+  player.style.display = 'none';
+}
+captureButton.addEventListener('click', () => {
+  processImage();
+  convertToBW();
+  toAscii();
 });
+
+navigator.mediaDevices.getUserMedia({video: true})
+    .then(handleSuccess);
 
 function convertToBW() {
   // enumerate all pixels
   // each pixel's r,g,b,a datum are stored in separate sequential array elements
+
+  const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
+  let bc = [];
+  let ac = [];
 
   for(let i = 0; i < data.length; i+=4) {
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    const toGreyScale = (r, g, b) => (0.21 * r + 0.72 * g + 0.07 * b);
-    data[i] = data[i+1] = data[i+2] = toGreyScale(r, g, b);
+    const toGreyScale = (r, g, b) =>  (Math.max(r, g, b) + Math.min(r, g, b)) / 2;
+    let p =  toGreyScale(r, g, b);
+    data[i] = data[i+1] = data[i+2] = p;
+    bc.push(data[i]);
   }
-  ctx.putImageData(imgData, 0, 0);
 
+  ctx.putImageData(imgData, 0, 0);
 }
 
 function renderPixel(val) {
-  return map[Math.ceil((map.length - 1) * val / 255)];
+  let p = map[Math.ceil((map.length - 1) * val / 255)];
+  const extend = (pixel, times) => {
+    while(times-1 > 0) {
+      pixel += pixel;
+      times--;
+    }
+    return pixel;
+  }
+  return extend(p, 1);
 }
 
 function toAscii() {
 
-  let ascii = "";
-  let line = 10;
-  let step = 8;
-
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
-  let w = canvas.width;
 
-  ctxTerminal.font = '10px serif';
-  ctxTerminal.fillStyle = "#ececec"
+  let ascii = "";
 
   for(let i = 0; i < data.length; i+=4) {
-    if ((i + 1) % w === 0) {
+    if((i/4) % canvas.width == 0) {
       ascii += "\n";
     }
-
     ascii += renderPixel(data[i]);
-
-
   }
-  ctxTerminal.fillText(ascii, 0, 10);
-
+  asciiImage.style.fontSize = "3px";
+  asciiImage.textContent = ascii;
 }
 
-downloadBtn.addEventListener('click', e => {
-    const fileExtension = filename.slice(-4);
-
-    let newFileName;
-
-    if(fileExtension === '.jpg' || fileExtension === '.png'){
-        newFileName = filename.substring(0, filename.length - 4) + '-edited.jpg';
-    }
-
-    download(canvas, newFileName);
-});
 
 function download(canvas, filename){
-    let e;
-
     const link = document.createElement('a');
+    let e;
 
     link.download = filename;
     link.href = canvas.toDataURL('image/jpeg', 0.8);
