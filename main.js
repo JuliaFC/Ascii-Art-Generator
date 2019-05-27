@@ -1,32 +1,33 @@
+//import {convolution} from 'convolution.js';
 const canvas = document.getElementById('canvas');
-const asciiImage = document.getElementById('ascii');
-
 const ctx = canvas.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
+
+const asciiImage = document.getElementById('ascii');
+const player = document.getElementById('player');
+const captureButton = document.getElementById('capture');
+
+
+
 const japaneseMap = " .,~:i1tfLCG08@$";
 const map ="・ヽヾゞょいうめゆぬむぎふあ";
-const player = document.getElementById('player');
-const snapshotCanvas = document.getElementById('canvas');
-const captureButton = document.getElementById('capture');
+
+const CONSTRAIN_RATE = 0.75;
+const FONT_SIZE = "2px";
+const MAXIMUM_WIDTH = Math.floor(canvas.width * CONSTRAIN_RATE);
+const MAXIMUM_HEIGHT = Math.floor(canvas.height * CONSTRAIN_RATE);
 
 let img = new Image();
 let filename = '';
-let greyScale = [];
 
 let videoTracks;
 
-const handleSuccess = (stream) => {
+const startWebcamStream = (stream) => {
   // Attach the video stream to the video element and autoplay.
   player.srcObject = stream;
   videoTracks = stream.getVideoTracks();
 };
-const contrast = 20;
-const constrainRate = 0.65;
-const fontSize = "2px";
-const MAXIMUM_WIDTH = Math.floor(canvas.width * constrainRate);
-const MAXIMUM_HEIGHT = Math.floor(canvas.height * constrainRate);
-
 
 const getFontRatio = () => {
     const pre = document.createElement('pre');
@@ -38,7 +39,6 @@ const getFontRatio = () => {
     document.body.removeChild(pre);
     return height/width;
 };
-
 
 const constrainProportions = (width, height) => {
     const rectifiedWidth = Math.floor(getFontRatio() * width);
@@ -56,24 +56,6 @@ const constrainProportions = (width, height) => {
     return [rectifiedWidth, height];
 };
 
-function processImage() {
-  const context = canvas.getContext('2d');
-  // Draw the video frame to the canvas.
-  const [width, height] = constrainProportions(snapshotCanvas.width, snapshotCanvas.height);
-  snapshotCanvas.width = width;
-  snapshotCanvas.height = height;
-
-  console.log('Successfully loaded image!');
-  console.log('Image size: ' + snapshotCanvas.width + ' x ' + snapshotCanvas.height);
-
-  context.drawImage(player, 0, 0, snapshotCanvas.width,
-      snapshotCanvas.height);
-  videoTracks.forEach((track) => {
-      track.stop();
-  });
-  player.style.display = 'none';
-}
-
 captureButton.addEventListener('click', () => {
   processImage();
   convertToBW();
@@ -81,11 +63,27 @@ captureButton.addEventListener('click', () => {
 });
 
 navigator.mediaDevices.getUserMedia({video: true})
-    .then(handleSuccess);
+    .then(startWebcamStream);
 
-function convertToBW() {
-  // enumerate all pixels
-  // each pixel's r,g,b,a datum are stored in separate sequential array elements
+const processImage = () => {
+  const context = canvas.getContext('2d');
+  // Get the reduced width and height.
+  const [width, height] = constrainProportions(canvas.width, canvas.height);
+
+  canvas.width = width;
+  canvas.height = height;
+
+  console.log('Successfully loaded image!');
+  console.log('Image size: ' + canvas.width + ' x ' + canvas.height);
+
+  context.drawImage(player, 0, 0, canvas.width, canvas.height);
+  videoTracks.forEach((track) => {
+      track.stop();
+  });
+  player.style.display = 'none';
+}
+
+const convertToBW = () => {
 
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
@@ -128,7 +126,7 @@ function toAscii() {
     }
     ascii += renderPixel(data[i]);
   }
-  asciiImage.style.fontSize = fontSize;
+  asciiImage.style.fontSize = FONT_SIZE;
   asciiImage.textContent = ascii;
 }
 
