@@ -1,4 +1,3 @@
-//import {convolution} from 'convolution.js';
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
@@ -8,12 +7,10 @@ const asciiImage = document.getElementById('ascii');
 const player = document.getElementById('player');
 const captureButton = document.getElementById('capture');
 
-
-
 const japaneseMap = " .,~:i1tfLCG08@$";
 const map ="・ヽヾゞょいうめゆぬむぎふあ";
 
-const CONSTRAIN_RATE = 0.75;
+const CONSTRAIN_RATE = 0.55;
 const FONT_SIZE = "2px";
 const MAXIMUM_WIDTH = Math.floor(canvas.width * CONSTRAIN_RATE);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * CONSTRAIN_RATE);
@@ -65,6 +62,33 @@ captureButton.addEventListener('click', () => {
 navigator.mediaDevices.getUserMedia({video: true})
     .then(startWebcamStream);
 
+const convolution = (kernel) => {
+const ctx = canvas.getContext('2d');
+const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+const data = imgData.data;
+const tmpData = imgData.data;
+const width = canvas.width;
+let ret = [];
+  for(let i = 0; i<data.length; i++) {
+    if(i%4 == 3) {
+      ret[i] = data[i];
+      continue;
+    }
+      data[i] = (tmpData[i] * kernel[0]
+        + (tmpData[i-4] || tmpData[i]) * kernel[1]
+        + (tmpData[i+4] || tmpData[i]) * kernel[2]
+        + (tmpData[i-4 * width] || tmpData[i]) * kernel[3]
+        + (tmpData[i+4 * width] || tmpData[i]) * kernel[4]
+        + (tmpData[i-4 * width - 4] || tmpData[i]) * kernel[5]
+        + (tmpData[i-4 * width + 4] || tmpData[i]) * kernel[6]
+        + (tmpData[i+4 * width - 4] || tmpData[i]) * kernel[7]
+        + (tmpData[i+4 * width + 4] || tmpData[i]) * kernel[8]
+      )/9;
+      ret[i] = data[i];
+  }
+  return ret;
+}
+
 const processImage = () => {
   const context = canvas.getContext('2d');
   // Get the reduced width and height.
@@ -84,7 +108,6 @@ const processImage = () => {
 }
 
 const convertToBW = () => {
-
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
@@ -97,8 +120,48 @@ const convertToBW = () => {
     let p =  toGreyScale(r, g, b);
     data[i] = data[i+1] = data[i+2] = p;
   }
-
   ctx.putImageData(imgData, 0, 0);
+  let blur = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+  let sobelX = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
+  let sobelY = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
+
+data.set(convolution(blur));
+ctx.putImageData(imgData, 0, 0);
+
+let sobX = convolution(sobelX);
+console.log('sobX', sobX);
+
+for(let i=0; i<sobX.length; i++) {
+  if(i%4 == 3){continue;}
+  sobX[i] *= sobX[i];
+}
+console.log('square sobX', sobX);
+
+let sobY = convolution(sobelY);
+console.log('sobY', sobY);
+
+for(let i=0; i<sobY.length; i++) {
+  if(i%4 == 3){continue;}
+  sobY[i] *= sobY[i];
+}
+console.log('square sobY', sobY);
+
+for(let i=0; i<sobX.length; i++) {
+  if(i%4 == 3){continue;}
+  sobX[i] += sobY[i];
+}
+
+console.log('square sum', sobX);
+
+for(let i=0; i<sobX.length; i++) {
+  if(i%4 == 3){continue;}
+  sobX[i] = Math.floor(Math.sqrt(sobY[i]));
+}
+console.log('root sum', sobX);
+
+data.set(sobX);
+ctx.putImageData(imgData, 0, 0);
+
 }
 
 function renderPixel(val) {
