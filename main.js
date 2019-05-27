@@ -123,7 +123,7 @@ const convertToBW = () => {
 data.set(convolution(blur));
 ctx.putImageData(imgData, 0, 0);
 
-let sobX = convolution(sobelX);
+let sobX = new Int32Array(convolution(sobelX));
 console.log('sobX', sobX);
 
 for(let i=0; i<sobX.length; i++) {
@@ -132,7 +132,7 @@ for(let i=0; i<sobX.length; i++) {
 }
 console.log('square sobX', sobX);
 
-let sobY = convolution(sobelY);
+let sobY =new Int32Array(convolution(sobelY));
 console.log('sobY', sobY);
 
 for(let i=0; i<sobY.length; i++) {
@@ -141,21 +141,22 @@ for(let i=0; i<sobY.length; i++) {
 }
 console.log('square sobY', sobY);
 
+let foo;
+foo =  new Int32Array(sobX);
 for(let i=0; i<sobX.length; i++) {
   if(i%4 == 3){continue;}
-  sobX[i] += sobY[i];
+  foo[i] += sobY[i];
 }
-console.log('square sum', sobX);
+console.log('square sum', foo);
 
 for(let i=0; i<sobX.length; i++) {
   if(i%4 == 3){continue;}
-  sobX[i] = Math.floor(Math.sqrt(sobX[i]));
+  foo[i] = Math.floor(Math.sqrt(foo[i]));
 }
-console.log('root sum', sobX);
+console.log('root sum', foo);
 
-data.set(sobX);
+data.set(foo);
 ctx.putImageData(imgData, 0, 0);
-
 }
 
 function renderPixel(val) {
