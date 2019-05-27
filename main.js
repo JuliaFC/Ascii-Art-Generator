@@ -68,12 +68,8 @@ const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
 const tmpData = imgData.data;
 const width = canvas.width;
-let ret = [];
   for(let i = 0; i<data.length; i++) {
-    if(i%4 == 3) {
-      ret[i] = data[i];
-      continue;
-    }
+    if(i%4 == 3) {continue;}
       data[i] = (tmpData[i] * kernel[0]
         + (tmpData[i-4] || tmpData[i]) * kernel[1]
         + (tmpData[i+4] || tmpData[i]) * kernel[2]
@@ -84,9 +80,8 @@ let ret = [];
         + (tmpData[i+4 * width - 4] || tmpData[i]) * kernel[7]
         + (tmpData[i+4 * width + 4] || tmpData[i]) * kernel[8]
       )/9;
-      ret[i] = data[i];
   }
-  return ret;
+  return data;
 }
 
 const processImage = () => {
@@ -150,12 +145,11 @@ for(let i=0; i<sobX.length; i++) {
   if(i%4 == 3){continue;}
   sobX[i] += sobY[i];
 }
-
 console.log('square sum', sobX);
 
 for(let i=0; i<sobX.length; i++) {
   if(i%4 == 3){continue;}
-  sobX[i] = Math.floor(Math.sqrt(sobY[i]));
+  sobX[i] = Math.floor(Math.sqrt(sobX[i]));
 }
 console.log('root sum', sobX);
 
