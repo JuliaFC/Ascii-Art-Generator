@@ -165,7 +165,7 @@ console.log('root sum', foo);
 
 }
 
-function renderPixel(val) {
+const renderPixel = (val) => {
   let p = map[Math.floor((map.length - 1) * val / 255)];
   const extend = (pixel, times) => {
     while(times-1 > 0) {
@@ -177,7 +177,7 @@ function renderPixel(val) {
   return extend(p, 1);
 }
 
-function toAscii() {
+const toAscii = () => {
 
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
@@ -194,7 +194,7 @@ function toAscii() {
   asciiImage.textContent = ascii;
 }
 
-function download(canvas, filename){
+const download = (canvas, filename) => {
     const link = document.createElement('a');
     let e;
 
