@@ -7,11 +7,11 @@ const asciiImage = document.getElementById('ascii');
 const player = document.getElementById('player');
 const captureButton = document.getElementById('capture');
 
-const japaneseMap = " .,~:i1tfLCG08@$";
-const map ="・ヽヾゞょいうめゆぬむぎふあ";
+const map = " .-^:LiCtfG08@|";
+const japaneseMap =" ・ヽヾゞょいうめゆぬむぎふあ";
 
 const CONSTRAIN_RATE = 0.55;
-const FONT_SIZE = "2px";
+const FONT_SIZE = "3px";
 const MAXIMUM_WIDTH = Math.floor(canvas.width * CONSTRAIN_RATE);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * CONSTRAIN_RATE);
 
@@ -81,6 +81,7 @@ const width = canvas.width;
         + (tmpData[i+4 * width + 4] || tmpData[i]) * kernel[8]
       )/9;
   }
+  console.log('conv in', data);
   return data;
 }
 
@@ -116,9 +117,12 @@ const convertToBW = () => {
     data[i] = data[i+1] = data[i+2] = p;
   }
   ctx.putImageData(imgData, 0, 0);
-  let blur = [1, 1, 1, 1, 1, 1, 1, 1, 1];
-  let sobelX = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
-  let sobelY = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
+}
+
+const detectEdge = () => {
+  const blur = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const sobelX = [1, 0, -1, 2, 0,-2, 1, 0, -1];
+  const sobelY = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
 
 data.set(convolution(blur));
 ctx.putImageData(imgData, 0, 0);
@@ -133,7 +137,7 @@ for(let i=0; i<sobX.length; i++) {
 console.log('square sobX', sobX);
 
 let sobY =new Int32Array(convolution(sobelY));
-console.log('sobY', sobY);
+console.log('sobY');
 
 for(let i=0; i<sobY.length; i++) {
   if(i%4 == 3){continue;}
@@ -152,15 +156,17 @@ console.log('square sum', foo);
 for(let i=0; i<sobX.length; i++) {
   if(i%4 == 3){continue;}
   foo[i] = Math.floor(Math.sqrt(foo[i]));
+
 }
 console.log('root sum', foo);
 
-data.set(foo);
-ctx.putImageData(imgData, 0, 0);
+//data.set(foo);
+//ctx.putImageData(imgData, 0, 0);
+
 }
 
 function renderPixel(val) {
-  let p = map[Math.ceil((map.length - 1) * val / 255)];
+  let p = map[Math.floor((map.length - 1) * val / 255)];
   const extend = (pixel, times) => {
     while(times-1 > 0) {
       pixel += pixel;
@@ -187,7 +193,6 @@ function toAscii() {
   asciiImage.style.fontSize = FONT_SIZE;
   asciiImage.textContent = ascii;
 }
-
 
 function download(canvas, filename){
     const link = document.createElement('a');
