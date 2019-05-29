@@ -1,4 +1,4 @@
-export function convolution(img, kernel, canvas) {
+function convolution(img, kernel, canvas) {
 
   const up = 2;
   const dn = 1;

@@ -5,6 +5,7 @@ const data = imgData.data;
 
 const asciiImage = document.getElementById('ascii');
 const player = document.getElementById('player');
+const startStreamButton = document.getElementById('start_stream');
 const captureButton = document.getElementById('capture');
 
 const map = " .-^:LiCtfG08@|";
@@ -14,16 +15,36 @@ const CONSTRAIN_RATE = 0.55;
 const FONT_SIZE = "3px";
 const MAXIMUM_WIDTH = Math.floor(canvas.width * CONSTRAIN_RATE);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * CONSTRAIN_RATE);
+const ORIGINAL_WIDTH =  canvas.width;
+const ORIGINAL_HEIGHT = canvas.height;
 
+let isOn = false;
 let img = new Image();
 let filename = '';
 
 let videoTracks;
 
+const clearCanvas = () => {
+    const pre = document.createElement('pre');
+    pre.style.display = 'inline';
+    pre.textContent = map[0];
+
+    document.body.appendChild(pre);
+    const { width, height } = pre.getBoundingClientRect();
+    document.body.removeChild(pre);
+    return height/width;
+};
+
 const startWebcamStream = (stream) => {
   // Attach the video stream to the video element and autoplay.
-  player.srcObject = stream;
-  videoTracks = stream.getVideoTracks();
+  if(isOn) {
+    videoTracks.forEach((track) => {
+        track.stop();
+    });
+  } else {
+    player.srcObject = stream;
+    videoTracks = stream.getVideoTracks();
+  }
 };
 
 const getFontRatio = () => {
@@ -53,14 +74,28 @@ const constrainProportions = (width, height) => {
     return [rectifiedWidth, height];
 };
 
+startStreamButton.addEventListener('click', () => {
+  let webcam = openWebcam();
+  webcam.then((stream) => {
+  startWebcamStream(stream);
+  isOn = !isOn;
+    if(isOn) {
+      startStreamButton.innerHTML = 'Stop Stream';
+    } else {
+      startStreamButton.innerHTML = 'Start Stream';
+    }
+  })
+});
+
 captureButton.addEventListener('click', () => {
   processImage();
   convertToBW();
   toAscii();
 });
 
-navigator.mediaDevices.getUserMedia({video: true})
-    .then(startWebcamStream);
+const openWebcam = () => {
+  return navigator.mediaDevices.getUserMedia({video: true});
+}
 
 const convolution = (kernel) => {
 const ctx = canvas.getContext('2d');
@@ -88,19 +123,15 @@ const width = canvas.width;
 const processImage = () => {
   const context = canvas.getContext('2d');
   // Get the reduced width and height.
-  const [width, height] = constrainProportions(canvas.width, canvas.height);
+  const [width, height] = constrainProportions(ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
 
   canvas.width = width;
   canvas.height = height;
 
   console.log('Successfully loaded image!');
   console.log('Image size: ' + canvas.width + ' x ' + canvas.height);
-
   context.drawImage(player, 0, 0, canvas.width, canvas.height);
-  videoTracks.forEach((track) => {
-      track.stop();
-  });
-  player.style.display = 'none';
+  canvas.style.display = 'none';
 }
 
 const convertToBW = () => {
@@ -116,7 +147,6 @@ const convertToBW = () => {
     let p =  toGreyScale(r, g, b);
     data[i] = data[i+1] = data[i+2] = p;
   }
-  ctx.putImageData(imgData, 0, 0);
 }
 
 const detectEdge = () => {
