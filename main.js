@@ -7,8 +7,9 @@ const asciiImage = document.getElementById('ascii');
 const player = document.getElementById('player');
 const startStreamButton = document.getElementById('start_stream');
 const captureButton = document.getElementById('capture');
+const uploadButton = document.getElementById('upload');
 
-const map = " .-^:LiCtfG08@|";
+const map = " `-^:LiCtfG08@%";
 const japaneseMap =" ・ヽヾゞょいうめゆぬむぎふあ";
 
 const CONSTRAIN_RATE = 0.55;
@@ -93,6 +94,42 @@ captureButton.addEventListener('click', () => {
   toAscii();
 });
 
+uploadButton.addEventListener('change', e => {
+  uploadImage();
+});
+
+const uploadImage = () => {
+  const file = document.getElementById('upload').files[0];
+
+   const reader = new FileReader();
+   const ctx = canvas.getContext('2d');
+
+   if(file){
+       filename = file.name;
+       reader.readAsDataURL(file);
+   }
+
+   reader.addEventListener('load', () => {
+       img = new Image();
+       img.src = reader.result;
+       img.onload = function() {
+           canvas.width = img.width;
+           canvas.height = img.height;
+           ctx.drawImage(img, 0, 0, img.width, img.height);
+           const context = canvas.getContext('2d');
+           // Get the reduced width and height.
+           const [width, height] = constrainProportions(ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
+
+           canvas.width = width;
+           canvas.height = height;
+           context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+           convertToBW();
+           toAscii();
+       }
+   }, false);
+}
+
 const openWebcam = () => {
   return navigator.mediaDevices.getUserMedia({video: true});
 }
@@ -138,7 +175,7 @@ const convertToBW = () => {
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
-
+  console.log(imgData);
   for(let i = 0; i < data.length; i+=4) {
     const r = data[i];
     const g = data[i + 1];
@@ -147,6 +184,7 @@ const convertToBW = () => {
     let p =  toGreyScale(r, g, b);
     data[i] = data[i+1] = data[i+2] = p;
   }
+  ctx.putImageData(imgData, 0, 0);
 }
 
 const detectEdge = () => {
