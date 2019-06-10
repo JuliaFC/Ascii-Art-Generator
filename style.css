@@ -10,7 +10,12 @@
 
 pre{
     background-color: 	#000000;
-    color: 	#ffffff;
+    color: 	#00ff00;
     text-align: center;
     display: inline-block;
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
 }

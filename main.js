@@ -175,6 +175,7 @@ const convertToBW = () => {
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
   const data = imgData.data;
+
   console.log(imgData);
   for(let i = 0; i < data.length; i+=4) {
     const r = data[i];
