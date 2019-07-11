@@ -126,6 +126,8 @@ const uploadImage = () => {
 
            convertToBW();
            toAscii();
+           detectEdge();
+
        }
    }, false);
 }
@@ -153,7 +155,7 @@ const width = canvas.width;
         + (tmpData[i+4 * width + 4] || tmpData[i]) * kernel[8]
       )/9;
   }
-  console.log('conv in', data);
+  console.log('conv output:', data);
   return data;
 }
 
@@ -188,13 +190,31 @@ const convertToBW = () => {
   ctx.putImageData(imgData, 0, 0);
 }
 
+const blurImage = () => {
+  const blur = [1/16, 1/8, 1/16, 1/8, 1/4, 1/8, 1/16, 1/8, 1/16];
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+  const data = imgData.data;
+
+   console.log('before: ')
+   console.log(imgData)
+   console.log('blurring...')
+   for(let i=0; i<1; i++) {
+     data.set(convolution(blur));
+   }
+   ctx.putImageData(imgData, 0, 0);
+   console.log('done blurring...')
+   return data;
+
+}
 const detectEdge = () => {
-  const blur = [1, 1, 1, 1, 1, 1, 1, 1, 1];
   const sobelX = [1, 0, -1, 2, 0,-2, 1, 0, -1];
   const sobelY = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
+  let data = imgData.data;
 
-data.set(convolution(blur));
-ctx.putImageData(imgData, 0, 0);
+  data = blurImage();
 
 let sobX = new Int32Array(convolution(sobelX));
 console.log('sobX', sobX);
