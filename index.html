@@ -20,28 +20,24 @@
             <div class="col-xl-12 m-auto">
               <div class="row justify-content-md-center row mb-3">
                   <div class="col-md-6">
-                      <button id="start_stream" class="filter-btn ascii-art btn btn-primary btn-block">Start Stream</button>
-                      <button id="capture" class="filter-btn ascii-art btn btn-success btn-block">Capture Snapshot</button>
-                      <input id="upload" type="file" accept="image/*" capture>
-
+                      <button aria-label="start webcam stream" role="button" id="start_stream" class="filter-btn ascii-art btn btn-primary btn-block">Start Stream</button>
+                      <button aria-label="capture snapshot"role="button" id="capture" class="filter-btn ascii-art btn btn-success btn-block">Capture Snapshot</button>
+                      <input aria-label="upload image from computer" role="input" id="upload" type="file" accept="image/*" capture>
                   </div>
               </div>
-              <video id="player" controls autoplay></video>
+              <video aria-label="video player" id="player" controls autoplay></video>
               <canvas id="canvas" width=640 height=480></canvas>
               <pre id="ascii"></pre>
-              <div id="bla"></div>
                 <footer id="footer">
                     <br><br>
-                    <p>Made by <a href="http://www.linkedin.com/juliafeitosac">Julia Feitosa</a></p>
+                    <p>Made by <a aria-label="linkedin profile link for Julia Feitosa" href="http://www.linkedin.com/juliafeitosac">Julia Feitosa</a></p>
                 </footer>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
-    <script src="https://google.github.io/traceur-compiler/bin/traceur.js"></script>
-    <script src="https://google.github.io/traceur-compiler/bin/BrowserSystem.js"></script>
-    <script src="./main.js"></script>
+    <script src="./lib/main.js"></script>
 
 </body>
 </html>
