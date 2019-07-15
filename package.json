@@ -1,13 +1,32 @@
 {
   "name": "ascii-art-generator",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel ./src/main.js -o ./lib/main-compiled.js && webpack --config ./webpack_config.js --mode production"
   },
   "devDependencies": {
+    "@babel-cli": "^6.0.0",
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
-    "babel-cli": "^6.0.0"
-  }
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {},
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuliaFC/Ascii-Art-Generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuliaFC/Ascii-Art-Generator/issues"
+  },
+  "homepage": "https://github.com/JuliaFC/Ascii-Art-Generator#readme",
+  "description": ""
 }
