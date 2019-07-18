@@ -13,7 +13,7 @@ const uploadButton = document.getElementById('upload');
 const map = " `-^¬:L*iCtfG0X8@#&%";
 const japaneseMap =" ・ヽヾゞょいうめゆぬむぎふあ";
 
-const CONSTRAIN_RATE = 0.15;
+const CONSTRAIN_RATE = 0.175;
 const FONT_SIZE = "5px";
 const MAXIMUM_WIDTH = Math.floor(canvas.width * CONSTRAIN_RATE);
 const MAXIMUM_HEIGHT = Math.floor(canvas.height * CONSTRAIN_RATE);

@@ -1,0 +1,81 @@
+#footer{
+    margin-top:10px;
+}
+
+/*
+** Headers
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  font-family: 'VT323', monospace;
+}
+
+#myCanvas {
+  background-color: #000000;
+}
+
+.embossed-text {
+  color: white;
+}
+
+.button-text {
+  color: black;
+}
+
+.window {
+  padding: 1px 1px 50px 1px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 655px;
+  border: ridge 5px grey;
+  border-color: white darkgrey darkgrey white;
+}
+
+.button {
+  padding: 0px 0px 20px 0px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 35px;
+  width: 85px;
+  border: ridge 5px grey;
+  border-color: white darkgrey darkgrey white;
+  font-family: 'VT323', monospace;
+  color: black;
+  font-size: 22px;
+
+}
+
+.header-bar {
+  padding: 0px 0px 0px 10px;
+  background-color: #000080
+}
+
+.background-gray {
+  background-color: #B2B2B2;
+}
+
+.background-img {
+  background: url(images/bg.jpg) repeat  fixed;
+}
+
+pre {
+    background-color: #000000;
+    color: #FFFFFF;
+    text-align: center;
+    display: inline-block;
+}
+
+body {
+  padding: 25px 50px 75px 100px;
+  background-color: #00807F
+
+}
+html {
+  background-color: #00807F;
+
+}
