@@ -1,61 +1,129 @@
-#footer{
-    margin-top:10px;
-}
-
 /*
 ** Headers
 */
-
+/* line 5, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
 h1,
 h2,
 h3,
 h4,
-h5 {
-  font-family: 'VT323', monospace;
+h5,
+p {
+  font-family: 'Roboto', sans-serif;
 }
 
+/* line 14, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
 #myCanvas {
   background-color: #000000;
 }
 
-.embossed-text {
+/* line 18, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.header-text {
   color: white;
+  font-size: 22px;
 }
+
+/* line 23, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.button-text {
+  font-size: 16px;
+  color: black;
+}
+
+/* line 28, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
 .window {
-  padding: 1px 1px 50px 1px;
-  margin-left: auto;
-  margin-right: auto;
+  padding-bottom: 25px;
+  margin: auto;
   width: 655px;
+  height: 700px;
+  border: ridge 5px grey;
+  border-color: white darkgrey darkgrey white;
+  box-shadow: 10px 10px 6px -4px rgba(0, 0, 0, 0.22);
+}
+
+/* line 38, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.header-bar {
+  padding: 0px 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  line-height: 35px;
+  height: 35px;
+  vertical-align: middle;
+  display: flex;
+  justify-content: space-between;
+  background-color: #000080;
+}
+
+/* line 50, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.min-max-close-container {
+  border: none;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  cursor: default;
+  float: right;
+}
+
+/* line 60, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.center-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* line 65, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.close-button {
+  height: 25px;
+  width: 25px;
+  font-size: 22px;
+  margin-top: 5px;
+  justify-content: center;
+  line-height: 0px;
   border: ridge 5px grey;
   border-color: white darkgrey darkgrey white;
 }
 
-.header-bar {
-  padding: 0px 0px 0px 10px;
-  background-color: #000080
+/* line 76, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+.button {
+  padding: 1px;
+  height: 35px;
+  width: 125px;
+  position: absolute;
+  bottom: 5px;
+  border: ridge 5px grey;
+  border-color: white darkgrey darkgrey white;
 }
 
+/* line 86, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+button:enabled:hover {
+  background-color: #B2B2B2;
+  color: black;
+}
+
+/* line 91, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+button:focus {
+  background-color: #B2B2B2;
+  color: black;
+  border: ridge 5px grey;
+  border-color: darkgrey white white darkgrey;
+}
+
+/* line 98, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
 .background-gray {
   background-color: #B2B2B2;
 }
 
-.background-img {
-  background: url(images/bg.jpg) repeat  fixed;
-}
-
+/* line 102, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
 pre {
-    background-color: #000000;
-    color: #FFFFFF;
-    text-align: center;
-    display: inline-block;
+  background-color: #000000;
+  color: #FFFFFF;
+  text-align: center;
+  display: inline-block;
 }
 
+/* line 109, ../../../Documents/AsciiArt-JS/AsciiArtGenerator/lib/style.scss */
+html,
 body {
-  padding: 25px 50px 75px 100px;
-  background-color: #00807F
-
-}
-html {
+  padding: 25px 50px;
   background-color: #00807F;
-
 }
+
+/*# sourceMappingURL=style.css.map */

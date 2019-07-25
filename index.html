@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./foundation.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <title>ASCII Art Generator</title>
+</head>
+<body>
+
+
+  <div class="window background-gray">
+    <div class="header-bar">
+      <div class="header-text">
+        <p> Ascii Art Camera </p>
+      </div>
+
+      <div class="min-max-close-container">
+        <button class="close-button background-gray" aria-label="close webcam stream" role="button" id="min_button"> - </button>
+        <button class="close-button background-gray" aria-label="close webcam stream" role="button" id="max_button"> □ </button>
+        <button class="close-button background-gray" aria-label="close webcam stream" role="button" id="close_button"> x </button>
+     </div>
+    </div>
+
+
+
+    <div class="center-container">
+      <pre id="ascii" width="640" height="480"></pre>
+      <button class="button background-gray" aria-label="start webcam stream" role="button" id="start_stream"><h4 class="button-text"> Start </h4> </button>
+    </div>
+  </div>
+
+  <canvas id="myCanvas" width="640" height="480" style="border:1px solid #000000;">
+  <video aria-label="video player" id="player" controls autoplay></video>
+<script src="bundle.js"></script>
+
+</body>
+</html>

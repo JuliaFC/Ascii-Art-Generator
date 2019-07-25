@@ -28,10 +28,11 @@ p {
 }
 
 .window {
-  padding: 1px 1px 50px 1px;
+  padding: 1px 1px 25px 1px;
   margin-left: auto;
   margin-right: auto;
   width: 655px;
+  height: 680px;
   border: ridge 5px grey;
   border-color: white darkgrey darkgrey white;
 }
@@ -47,7 +48,18 @@ p {
   font-family: 'VT323', monospace;
   color: black;
   font-size: 22px;
+}
 
+button:enabled:hover {
+  background-color: #B2B2B2;
+  color: black;
+}
+
+button:focus {
+  background-color: #B2B2B2;
+  color: black;
+  border: ridge 5px grey;
+  border-color: darkgrey white white darkgrey;
 }
 
 .header-bar {

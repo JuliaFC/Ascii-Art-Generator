@@ -8,7 +8,6 @@ const data = imgData.data;
 const asciiImage = document.getElementById('ascii');
 const player = document.getElementById('player');
 const startStreamButton = document.getElementById('start_stream');
-const uploadButton = document.getElementById('upload');
 
 const map = " `-^¬:L*iCtfG0X8@#&%";
 const japaneseMap =" ・ヽヾゞょいうめゆぬむぎふあ";
@@ -71,50 +70,12 @@ startStreamButton.addEventListener('click', () => {
   const videoTracks = startStream(stream, isOn, player);
   isOn = !isOn;
     if(isOn) {
-      startStreamButton.innerHTML = 'Stop Stream';
       player.addEventListener('play', function() {
         processImage();
       }, false);
-    } else {
-      startStreamButton.innerHTML = 'Start Stream';
     }
   })
 });
-
-uploadButton.addEventListener('change', e => {
-  uploadImage();
-});
-
-const uploadImage = () => {
-   const file = document.getElementById('upload').files[0];
-   const reader = new FileReader();
-
-   if(file){
-       reader.readAsDataURL(file);
-   }
-   else {
-     console.log('Error opening file!')
-   }
-
-   reader.addEventListener('load', () => {
-       let img = new Image();
-       img.src = reader.result;
-       img.onload = function() {
-           canvas.width = img.width;
-           canvas.height = img.height;
-           ctx.drawImage(img, 0, 0, img.width, img.height);
-           // Get the reduced width and height.
-           const [width, height] = constrainProportions(ORIGINAL_WIDTH, ORIGINAL_HEIGHT);
-
-           canvas.width = width;
-           canvas.height = height;
-           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-           convertToBW();
-           toAscii();
-       }
-   }, false);
-}
 
 const processImage = () => {
   const context = canvas.getContext('2d');
