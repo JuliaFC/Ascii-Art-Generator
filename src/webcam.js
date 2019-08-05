@@ -4,16 +4,11 @@ const openWebcam = () => {
 
 const startStream = (stream, isOn, player) => {
   // Attach the video stream to the video element and autoplay.
-  let videoTracks;
-  if(isOn) {
-    videoTracks.forEach((track) => {
-        track.stop();
-    });
-  } else {
+  let videoTracks = null;
+  if(stream) {
     player.srcObject = stream;
     videoTracks = stream.getVideoTracks();
   }
-
   return videoTracks;
 };
 

@@ -1,6 +1,8 @@
 import {openWebcam, startStream} from '../src/webcam.js'
 
 const canvas = document.getElementById('myCanvas');
+const testCanvas = document.getElementById('testCanvas');
+
 const ctx = canvas.getContext('2d');
 const imgData = ctx.getImageData(0,0,canvas.width, canvas.height);
 const data = imgData.data;
@@ -65,16 +67,32 @@ window.onload = () => {
 };
 
 startStreamButton.addEventListener('click', () => {
-  let webcam = openWebcam();
-  webcam.then((stream) => {
-  const videoTracks = startStream(stream, isOn, player);
+startStreamButton.style.color = 'black';
+  if(isOn) {
+    const stream = player.srcObject;
+    const tracks = stream.getTracks();
+
+    tracks.forEach(function(track) {
+     track.stop();
+    });
+    startStreamButton.innerHTML = "Start";
+    player.srcObject = null;
+  }
+
+  else {
+    const webcam = openWebcam();
+    webcam.then((stream) => {
+    const videoTracks = startStream(stream, isOn, player);
+      if(isOn) {
+        player.addEventListener('play', function() {
+          processImage();
+        }, false);
+      }
+    })
+    startStreamButton.innerHTML = "Stop";
+  }
+
   isOn = !isOn;
-    if(isOn) {
-      player.addEventListener('play', function() {
-        processImage();
-      }, false);
-    }
-  })
 });
 
 const processImage = () => {
@@ -88,6 +106,11 @@ const processImage = () => {
 
   convertToBW();
   toAscii();
+
+  const testContext = testCanvas.getContext('2d');
+  testContext.font = "2px Arial";
+  testContext.fillText(asciiImage.textContent, 0, 0);
+
   setTimeout(function() {
     processImage();
   }, 0);
